@@ -1,0 +1,23 @@
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="CArrange.aspx.cs" Inherits="DutyManager_CArrange" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head runat="server">
+    <title>无标题页</title>
+</head>
+<body>
+    <form id="form1" runat="server">
+    <div>
+     <asp:GridView ID="GV5" runat="server"　AutoGenerateColumns="False" Width="48%" >
+      <Columns>
+          <asp:BoundField DataField="Order_ID" HeaderText="勤务编号" Visible="False" />
+           <asp:BoundField DataField="OrderArrange_Guid" HeaderText="编号" Visible="False" />
+           <asp:BoundField DataField="CreatedBy" HeaderText="创建人" />
+          <asp:HyperLinkField Text="链接" HeaderText="链接" DataNavigateUrlFields="Order_ID,OrderArrange_Guid" DataNavigateUrlFormatString="DutyArrange.aspx?Order_ID={0}&amp;type='1'&amp;OrderArrange_Guid={1}" />
+     </Columns>
+    </asp:GridView>
+    </div>
+    </form>
+</body>
+</html>

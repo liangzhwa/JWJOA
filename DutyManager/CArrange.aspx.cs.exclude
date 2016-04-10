@@ -1,0 +1,44 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Collections;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+public partial class DutyManager_CArrange : System.Web.UI.Page
+{
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        string Order_ID = "";
+        string type = "";
+
+        if (Request.QueryString["Order_ID"] == null || Request.QueryString["Order_ID"].ToString() == "") //编码
+        {
+            Order_ID = "";
+        }
+        else
+        {
+            Order_ID = Request.QueryString["Order_ID"].ToString();
+        }
+        if (Request.QueryString["type"] == null || Request.QueryString["type"].ToString() == "") //编码
+        {
+            type = "";
+        }
+        else
+        {
+            type = Request.QueryString["type"].ToString();
+        }
+        //随卫勤务
+        string StrZArrange = "select OrderArrange_Guid,Order_ID,Name as CreatedBy  from SOrdCArrange left join SSysStaff on " +
+            " SOrdCArrange.CreatedBy = SSysStaff.Staff_Id where Order_ID = '" + Order_ID + "' and DutyPlan = '" + type  + "'";  //得到该勤务下的子勤务的类别和编号
+
+        DataTable ZArrangeTable1 = db.GetDataTable(StrZArrange);
+
+        GV5.DataSource = ZArrangeTable;
+        GV5.DataBind();
+    }
+}

@@ -1,0 +1,56 @@
+﻿using System;
+using System.Data;
+using System.Configuration;
+using System.Web;
+using System.Web.Security;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using System.Web.UI.WebControls.WebParts;
+using System.Web.UI.HtmlControls;
+
+/// <summary>
+/// SoftPhone 的摘要说明
+/// </summary>
+public class SoftPhone
+{
+	public SoftPhone()
+	{
+		//
+		// TODO: 在此处添加构造函数逻辑
+		//
+	}
+
+	/// <summary>
+	/// 获取软电话拨号返回的错误信息
+	/// </summary>
+	/// <param name="strResultComment"></param>
+	/// <returns></returns>
+	public static string GetMakeCallResultComment(string strResultComment)
+	{
+		string strReturnCode = "";
+
+		switch (strResultComment)
+		{
+			case "-1":
+				strReturnCode = "没有登录坐席";
+				break;
+			case "-2":
+				strReturnCode = "坐席当前状态不可以拨号";
+				break;
+			case "-3":
+				strReturnCode = "没有登录软电话";
+				break;
+			case "-4":
+				strReturnCode = "分机正在电话中，请挂机后重新拨号";
+				break;
+			case "-5":
+				strReturnCode = "无法拨号";
+				break;
+			default:
+				strReturnCode = "不能识别的拨号返回值" + strResultComment;
+				break;
+		}
+
+		return strReturnCode;
+	}
+}

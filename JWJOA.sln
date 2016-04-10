@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "http://localhost/JWJOA/", "http://localhost/JWJOA", "{C7D8859D-93D2-4192-92AE-956DD82DD1BD}"
+	ProjectSection(WebsiteProperties) = preProject
+		Debug.AspNetCompiler.VirtualPath = "/JWJOA"
+		Debug.AspNetCompiler.PhysicalPath = "..\JWJOA\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\JWJOA\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/JWJOA"
+		Release.AspNetCompiler.PhysicalPath = "..\JWJOA\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\JWJOA\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		SlnRelativePath = "..\JWJOA\"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7D8859D-93D2-4192-92AE-956DD82DD1BD}.Debug|.NET.ActiveCfg = Debug|.NET
+		{C7D8859D-93D2-4192-92AE-956DD82DD1BD}.Debug|.NET.Build.0 = Debug|.NET
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

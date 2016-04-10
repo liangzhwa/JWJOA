@@ -1,0 +1,706 @@
+/***********************************************
+ * 文件名：UserOper.cs
+ * 功能：用户类，包括登录、添加用户、注销用户等和用户相关的所有功能
+ * 作者：陶杰
+ * 时间：2005-8-28
+ * **********************************************/
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+using System.Collections;
+
+/// <summary>
+/// User 的摘要说明。
+/// </summary>
+public class UserOper
+{
+    public string sql;
+	public UserOper()
+	{
+		//
+		// TODO: 在此处添加构造函数逻辑
+		//
+	}
+	static public bool userPower(string strid,string strpower)//权限判断
+	{
+		if(strpower=="0")
+			return true;
+		string[] power = strpower.Split(',');
+		for(int i=0;i<=power.Length-1;i++)
+		{
+			if(power[i]==strid)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public Hashtable Login(string userName, string password) 
+	{		
+		string customerID,powerstr,style,strName, role,menu;
+        MDataBase db = new MDataBase(Config.ConnetionString);
+        sql = "";
+        //sql = "SELECT @Menu=WEB_E_Person.[menu],@CustomerID = WEB_E_Person.[ID],@Name=WEB_E_Person.[Name],@Style=WEB_E_Person.Unit,@Powerstr=WEB_E_Role.Fun,@Role=WEB_E_Role.[Name] FROM WEB_E_Person,WEB_E_RoleWHERE WEB_E_Person.Role=WEB_E_Role.[ID]  and (WEB_E_Person.loginname = @username AND WEB_E_Person.pwd= @password and WEB_E_Person.Status<>1 )";
+        sql = "SELECT count(*) FROM SCtiStaffs A INNER JOIN SCtiStaffProjectRole B ON A.Staff_Id = dbo.B.Staff_Id where A.StatusId='0' and A.Username='" + userName + "' and A.Password='" + password + "'";
+        DataSet ds=db.GetDataSet(sql);
+        if (Convert.ToInt32(ds.Tables[0].Rows.Count) < 1)
+        {
+            return null;
+        }
+        else
+        {
+            DataRow dr = db.GetDataRow(sql);
+            string Staff_Id = dr["Staff_Id"].ToString().Trim();
+            string Role_Id = dr["Role_Id"].ToString().Trim();
+        //    powerstr = (string) prams[4].Value;     // get the output param value
+        //    style = prams[6].Value.ToString();     // get the output param value
+        //    strName = (string) prams[3].Value;     // get the output param value
+        //    role = (string) prams[5].Value;     // get the output param value
+        //    menu = prams[7].Value.ToString();
+            Hashtable hauser = new Hashtable();
+            hauser.Add("Staff_Id", Staff_Id);
+            hauser.Add("Role_Id", Role_Id);
+        //    hauser.Add("style",style);
+        //    hauser.Add("role",role);
+        //    hauser.Add("Name",strName);
+        //    hauser.Add("Menu",menu);
+			return hauser;
+        }
+	}
+
+	public static string getName(string strin)
+	{
+		string strout="";
+		switch(strin)
+		{
+			case "home":
+				strout="首页";
+				break;
+			case "new":
+				strout="新闻聚焦";
+				break;
+			case "intro":
+				strout="公司介绍";
+				break;
+			case "fwsk":
+				strout="防伪税控及相关业务介绍";
+				break;
+			case "sln":
+				strout="一体化解决方案";
+				break;
+			case "soft":
+			case "soft1":
+				strout="软件产品";
+				break;
+			case "hard":
+			case "hard1":
+				strout="硬件产品";
+				break;
+			case "inter":
+				strout="求贤若渴";
+				break;
+			case "cm":
+				strout="联系我们";
+				break;
+			case "group":
+				strout="组织架构";
+				break;
+			case "cu":
+				strout="企业文化";
+				break;
+			case "law":
+				strout="政策法规查询";
+				break;
+			case "sch":
+				strout="业务流程介绍";
+				break;
+			case "king":
+				strout="金蝶系列产品";
+				break;
+			case "U3":
+				strout="AISINO U3 系列产品";
+				break;
+			case "fwyl":
+				strout="发文一览";
+				break;
+			case "glwd":
+				strout="管理文档下载";
+				break;
+			case "link":
+				strout="友情链接";
+				break;
+			case "yylink":
+				strout="应用链接";
+				break;
+			case "pub":
+				strout="公司公告";
+				break;
+			case "xxfw":
+				strout="信心服务";
+				break;
+			case "zzfw":
+				strout="增值服务";
+				break;
+		}
+		return strout;
+	}
+	public SqlDataReader getMenu(string strFun)//获取菜单名称 
+	{
+		
+			SqlDataReader funreader=null;
+			// params to stored proc
+			Database data = new Database();
+		
+			SqlParameter[] prams = {
+									   data.MakeInParam("@fun",SqlDbType.VarChar, 200,strFun)
+								   
+								   };
+
+			// create data object and params
+			data.RunProc("WEB_getMenu", prams,out funreader);    // run the stored procedure
+		
+
+			// if the customer id is an empty string, then the login failed
+			if (funreader == null)
+				return null;
+			else
+			{
+				return funreader;
+			}
+		
+	}
+	public SqlDataReader getInfoStructure(int ParID)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@ParID",SqlDbType.Int, 4,ParID)
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("WEB_getInfoStructure", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getSonMenu(string strFun,int father)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@fun",SqlDbType.VarChar, 2000,strFun),
+									data.MakeInParam("@father",SqlDbType.Int, 4,father)
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("WEB_getSonMenu", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getTopMenu()//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+
+		// create data object and params
+		data.RunProc("WEB_getTopMenu",out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getFinalMenu(string strvalue)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@Value",SqlDbType.VarChar, 10,strvalue)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_A_getTopMenu", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getFinalMenu1(string strvalue,string strvalue1)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@Value",SqlDbType.VarChar, 10,strvalue),
+									data.MakeInParam("@Value1",SqlDbType.VarChar, 50,strvalue1)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_A_getTopMenu1", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public int getTopID(string strvalue,string name)//获取菜单名称 
+	{
+		int inre=0;
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@Value",SqlDbType.VarChar, 10,strvalue),
+									data.MakeInParam("@name",SqlDbType.VarChar, 50,name)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_A_getTopInfoID", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader.Read())
+			inre=funreader.IsDBNull(0)?0:funreader.GetInt32(0);
+		funreader.Close();
+		return inre;
+		
+	}
+	public SqlDataReader getTopInfo(int sid)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@sid",SqlDbType.Int, 4,sid)									   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_A_getTopInfo", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getTopInfoForLink(int sid)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@sid",SqlDbType.Int, 4,sid)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_A_getTopInfoForLink", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getTopInfoForE(string sid)//获取菜单名称 
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@sid",SqlDbType.VarChar,20,sid)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_A_getTopInfoForE", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	
+	public string getTopPicLink(string kindvalue)//获取菜单名称 
+	{
+		string strre="";
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@kindvalue",SqlDbType.VarChar,10,kindvalue)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_F_getTopPicLink", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if(funreader.Read())
+		{
+			
+			strre=(funreader.IsDBNull(0)?"":funreader.GetString(0));
+		}
+		else
+		{
+			strre= "";
+		}
+		funreader.Close();
+		return strre;
+		
+	}
+	public string getTopPicLink2(string kindvalue)//获取菜单名称 
+	{
+		string strre="";
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@kindvalue",SqlDbType.VarChar,10,kindvalue)
+								  
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("Web_F_getTopPicLink", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if(funreader.Read())
+		{
+			
+			strre=(funreader.IsDBNull(1)?"":funreader.GetString(1));
+		}
+		else
+		{
+			strre= "";
+		}
+		funreader.Close();
+		return strre;
+		
+	}
+	public SqlDataReader getSoft()//获取所有公司
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		
+
+		// create data object and params
+		data.RunProc("WEB_getSoft",out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getRZSoft()//获取所有公司
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		
+
+		// create data object and params
+		data.RunProc("WEB_getRZSoft",out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public int getSoftCount()//获取所有公司
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		
+
+		// create data object and params
+		data.RunProc("WEB_getSoftCount",out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader.Read())
+			return funreader.GetInt32(0);
+		else
+		{
+			return 0;
+		}
+		
+	}
+	public int getRZSoftCount()//获取所有公司
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		
+
+		// create data object and params
+		data.RunProc("WEB_getRZSoftCount",out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader.Read())
+			return funreader.GetInt32(0);
+		else
+		{
+			return 0;
+		}
+		
+	}
+	public SqlDataReader getUnit(string strFun)//获取所有公司
+	{
+		
+			SqlDataReader funreader=null;
+			// params to stored proc
+			Database data = new Database();
+		
+			SqlParameter[] prams = {
+									   data.MakeInParam("@fun",SqlDbType.VarChar, 2,strFun)
+								   
+								   };
+
+			// create data object and params
+			data.RunProc("WEB_getUnit", prams,out funreader);    // run the stored procedure
+		
+
+			// if the customer id is an empty string, then the login failed
+			if (funreader == null)
+				return null;
+			else
+			{
+				return funreader;
+			}
+		
+	}
+
+	public SqlDataReader getDep(string strFun)//获取所有部门
+	{
+		
+			SqlDataReader funreader=null;
+			// params to stored proc
+			Database data = new Database();
+		
+			SqlParameter[] prams = {
+									   data.MakeInParam("@fun",SqlDbType.VarChar, 4,strFun)
+								   
+								   };
+
+			// create data object and params
+			data.RunProc("WEB_getDep", prams,out funreader);    // run the stored procedure
+		
+
+			// if the customer id is an empty string, then the login failed
+			if (funreader == null)
+				return null;
+			else
+			{
+				return funreader;
+			}
+		
+	}
+	public int getDepForPerson(int strid)//获取所有部门
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@strid",SqlDbType.Int, 4,strid)
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("WEB_getDepForPerson", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		int strout=0;
+		if (funreader.Read())
+			strout=funreader.IsDBNull(0)?0:funreader.GetInt32(0);
+		else
+		{
+			strout=0 ;
+		}
+		funreader.Close();
+		return strout;
+		
+	}
+	public SqlDataReader getBu(string strFun)//获取所有部门
+	{
+		
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+		
+		SqlParameter[] prams = {
+								   data.MakeInParam("@fun",SqlDbType.VarChar, 2,strFun)
+								   
+							   };
+
+		// create data object and params
+		data.RunProc("WEB_getBu", prams,out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+		
+	}
+	public SqlDataReader getPerson(string strUnit,string strDep)//获取所有部门
+	{
+		
+			SqlDataReader funreader=null;
+			// params to stored proc
+			Database data = new Database();
+		
+			SqlParameter[] prams = {
+									   data.MakeInParam("@unit",SqlDbType.VarChar, 2,strUnit),
+									   data.MakeInParam("@dep",SqlDbType.VarChar, 2,strDep)
+								   
+								   };
+
+			// create data object and params
+			data.RunProc("WEB_getPerson", prams,out funreader);    // run the stored procedure
+		
+
+			// if the customer id is an empty string, then the login failed
+			if (funreader == null)
+				return null;
+			else
+			{
+				return funreader;
+			}
+		
+	}
+
+
+	//得到企业的id,name
+	public SqlDataReader GetEnt( string entID )
+	{			
+		SqlDataReader funreader=null;
+		// params to stored proc
+		Database data = new Database();
+
+		SqlParameter[] parameters ={
+									   data.MakeInParam( "@EntID", SqlDbType.Int, 4, entID )
+								   };
+
+		// create data object and params
+		data.RunProc("WEB_A_GetEntIdName", parameters, out funreader);    // run the stored procedure
+		
+
+		// if the customer id is an empty string, then the login failed
+		if (funreader == null)
+			return null;
+		else
+		{
+			return funreader;
+		}
+	}
+}
